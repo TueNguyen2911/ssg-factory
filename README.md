@@ -44,7 +44,7 @@ will be converted to
 </html>
 ```
 ###### index.html for ./textfiles/
-![Image of index.html] (https://i.ibb.co/9YVnN1y/Screenshot-2021-09-14-003724.png)
+![Image of index.html](https://i.ibb.co/9YVnN1y/Screenshot-2021-09-14-003724.png)
 ## How to use: 
 
 ```
