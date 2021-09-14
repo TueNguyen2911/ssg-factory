@@ -78,8 +78,8 @@ const readInput = (filePath) => {
 //configure program
 program.version('0.1');
 program 
-  .option('-o, --output <path>', 'Specify a path for html files output')
-  .requiredOption('-i, --input <file path>', 'transform .txt files into .html files');
+  .option('-o, --output <path>', 'specify a path for .html files output')
+  .requiredOption('-i, --input <file path>', '(required) transform .txt files into .html files');
 
 program.parse(process.argv)
 
