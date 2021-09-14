@@ -113,7 +113,6 @@ if(option.input) {
       content: `${param.match(/([^\/]+$)/g)[0].split('.')[0]}`
     }
   });
-  console.log(filePaths)
   indexHtml.document.addElementToType('body', { type: 'div', content: linkObj }) ;
   fs.writeFileSync(`${outputPath}/index.html`, indexHtml.renderHTML());  
 } 
