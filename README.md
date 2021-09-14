@@ -1,4 +1,4 @@
-# Javascript Static Site Generateor (SSG)
+# Javascript Static Site Generator (SSG)
 A Javascript command line program that converts **.txt** files into **.html** files. 
 
 
@@ -43,9 +43,11 @@ will be converted to
    </body>
 </html>
 ```
+###### index.html for ./textfiles/
+![Image of index.html] (https://i.ibb.co/9YVnN1y/Screenshot-2021-09-14-003724.png)
 ## How to use: 
 
-```javascript
+```
 node index.js -i ./textfiles/file.txt
 node index.js -i ./textfiles 
 node index.js -i ./textfiles -o ./outputFiles
