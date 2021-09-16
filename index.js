@@ -10,23 +10,31 @@ var outputPath = './dist'
   @return: an object of type htmlCreator, can use htmlRender() to convert to string
 */
 const createHtml = (paragraphObj, titleObj) => {
-  return new htmlCreator([
+  const html = new htmlCreator().withBoilerplate([
     {
-      type: 'head',
-      content: [
-        { type: 'title', content: titleObj.content ? `${titleObj.content}` : 'Article'},
-        { type: 'link', attributes: {rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/water.css@2/out/water.css'}}
-      ]
+      type: 'h1',
+      content: titleObj.content,
     },
     {
-      type: titleObj.content? 'h1' : '',
-      content: `${titleObj.content}`
-    },
-    {
-      type: 'body',
-      content: paragraphObj
+      type: 'div',
+      content: paragraphObj,
     },
   ]);
+  // Append title to the `<head>` HTML element
+  html.document.addElementToType("head", {
+    type: "title",
+    content: titleObj.content ? `${titleObj.content}` : "Article",
+  });
+  // Append link to stylesheet to the `<head>` HTML element
+  html.document.addElementToType("head", {
+    type: "link",
+    attributes: {
+      rel: "stylesheet",
+      href: "https://cdn.jsdelivr.net/npm/water.css@2/out/water.css",
+    },
+  });
+
+  return html;
 }
 /*
   Look for title and convert text files into html files
