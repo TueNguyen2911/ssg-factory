@@ -13,7 +13,8 @@ const createHtml = (paragraphObj, titleObj) => {
   const html = new htmlCreator().withBoilerplate();
   var bodyContent = [{
     type: 'div',
-    content: paragraphObj,
+    attributes: {className: 'paragraphObj'},
+    content: paragraphObj
   }]
   // if a title is found, add the title wrapped inside `<h1>`
   // tag to the top of the `<body>` HTML element
@@ -23,6 +24,9 @@ const createHtml = (paragraphObj, titleObj) => {
       content: titleObj.content,
     });
   }
+  if (paragraphObj == null) {
+    bodyContent.pop();
+  } 
   // Append title to the `<head>` HTML element
   html.document.addElementToType("head", {
     type: "title",
@@ -36,9 +40,7 @@ const createHtml = (paragraphObj, titleObj) => {
       href: "https://cdn.jsdelivr.net/npm/water.css@2/out/water.css",
     },
   });
-
   html.document.addElementToType('body', bodyContent);
-
   return html;
 }
 /*
@@ -122,7 +124,8 @@ if(option.input) {
   const linkObj = filePaths.map(param => {
     return {
       type: 'a', 
-      attributes: {href: `${param.match(/([^\/]+$)/g)[0].split('.')[0]}.html`, style: 'display: block'}, 
+      //replace white space with %20
+      attributes: {href: `${param.match(/([^\/]+$)/g)[0].split('.')[0].replace(/\s/g, '%20')}.html`, style: 'display: block'}, 
       content: `${param.match(/([^\/]+$)/g)[0].split('.')[0]}`
     }
   });
