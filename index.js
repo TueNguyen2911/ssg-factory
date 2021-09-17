@@ -10,16 +10,19 @@ var outputPath = './dist'
   @return: an object of type htmlCreator, can use htmlRender() to convert to string
 */
 const createHtml = (paragraphObj, titleObj) => {
-  const html = new htmlCreator().withBoilerplate([
-    {
+  const html = new htmlCreator().withBoilerplate();
+  var bodyContent = [{
+    type: 'div',
+    content: paragraphObj,
+  }]
+  // if a title is found, add the title wrapped inside `<h1>`
+  // tag to the top of the `<body>` HTML element
+  if (titleObj.content) {
+    bodyContent.unshift({
       type: 'h1',
       content: titleObj.content,
-    },
-    {
-      type: 'div',
-      content: paragraphObj,
-    },
-  ]);
+    });
+  }
   // Append title to the `<head>` HTML element
   html.document.addElementToType("head", {
     type: "title",
@@ -33,6 +36,8 @@ const createHtml = (paragraphObj, titleObj) => {
       href: "https://cdn.jsdelivr.net/npm/water.css@2/out/water.css",
     },
   });
+
+  html.document.addElementToType('body', bodyContent);
 
   return html;
 }
