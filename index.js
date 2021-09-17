@@ -10,23 +10,31 @@ var outputPath = './dist'
   @return: an object of type htmlCreator, can use htmlRender() to convert to string
 */
 const createHtml = (paragraphObj, titleObj) => {
-  return new htmlCreator([
+  const html = new htmlCreator().withBoilerplate([
     {
-      type: 'head',
-      content: [
-        { type: 'title', content: titleObj.content ? `${titleObj.content}` : 'Article'},
-        { type: 'link', attributes: {rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/water.css@2/out/water.css'}}
-      ]
+      type: 'h1',
+      content: titleObj.content,
     },
     {
-      type: titleObj.content? 'h1' : '',
-      content: `${titleObj.content}`
-    },
-    {
-      type: 'body',
-      content: paragraphObj
+      type: 'div',
+      content: paragraphObj,
     },
   ]);
+  // Append title to the `<head>` HTML element
+  html.document.addElementToType("head", {
+    type: "title",
+    content: titleObj.content ? `${titleObj.content}` : "Article",
+  });
+  // Append link to stylesheet to the `<head>` HTML element
+  html.document.addElementToType("head", {
+    type: "link",
+    attributes: {
+      rel: "stylesheet",
+      href: "https://cdn.jsdelivr.net/npm/water.css@2/out/water.css",
+    },
+  });
+
+  return html;
 }
 /*
   Look for title and convert text files into html files
@@ -76,7 +84,7 @@ const readInput = (filePath) => {
 }
 
 //configure program
-program.version('0.1');
+program.version('tue-1st-ssg 0.1', '-v, --version');
 program 
   .option('-o, --output <path>', 'specify a path for .html files output')
   .requiredOption('-i, --input <file path>', '(required) transform .txt files into .html files');
