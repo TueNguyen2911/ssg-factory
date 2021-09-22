@@ -1,5 +1,5 @@
 # Javascript Static Site Generator (SSG)
-A Javascript command line program that converts **.txt** files into **.html** files. 
+A Javascript command line program that converts **.txt** and **.md** files into **.html** files. 
 
 
 ## Implemented features 
@@ -7,6 +7,10 @@ A Javascript command line program that converts **.txt** files into **.html** fi
 - User can **specify output folder path**, instead of placing .html files in './dist' by default
 - If **input path** is a **folder**, it will look for all .txt files in the **folder** and in **subfolder(s)**
 - An `index.html` contains **links to other .html files** in folder.
+- **Parsing Heading** from .md files => .html files to have `<h1>` to `h6` tags
+- **Parsing Bold** text from .md files => .html files to have `<b>` tags
+- **Parsing Italic** text from .md files => .html files to have `<i>` tags
+- **Parsing Links** from .md files => .html files to have `<a href="">` tags
 
 
 ## Example:
@@ -52,6 +56,7 @@ node index.js -i ./textfiles/file.txt
 node index.js -i ./textfiles 
 node index.js -i ./textfiles -o ./outputFiles
 node index.js -i sometext.txt 
+node index.js -i markdownFile.md 
 ```
 
 ## Help 
@@ -61,7 +66,7 @@ Usage: index [options]
 Options:
   -V, --version            output the version number
   -o, --output <path>      specify a path for .html files output
-  -i, --input <file path>  (required) transform .txt files into .html files
+  -i, --input <file path>  (required) transform .txt or .md files into .html files
   -h, --help               display help for command
 ```
 ## Demo Link
