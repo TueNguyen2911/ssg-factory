@@ -78,29 +78,22 @@ const createHtmlFiles = (filePath, fileType) => {
 
 const markdownToHtml = (param) => {
   // If Heading 1 to 6, turn into corresponding h1 to h6 tag
-  if (param.match(/^\s*(#{1,6}[^#]+$)/)) {
+  if (param.match(/^\s*#{1,6}[^#]+$/)) {
     const headerNum = param.match(/#/g).length
-    return Object({ type: `h${headerNum}`, content: param.replace(/^\s*(#{1,6})/, " ")});
+    return Object({ type: `h${headerNum}`, content: param.replace(/^\s*#{1,6}([^#]+)$/, "$1")});
   }
   else {
-    // If there is bold text wrap inside <b></b>
-    if(param.match(/\*\*([^\*]+)\*\*/)) {
-      param = param.replace(/\*\*([^\*]+)\*\*/g, "<b>$1</b>")
-    }
-    if(param.match(/__([^\*]+)__/)) {
-      param = param.replace(/__([^\*]+)__/g, "<b>$1</b>")
-    }
-    // If there is italic text wrap inside <i></i>
-    if(param.match(/\*([^\*]+)\*/)) {
-      param = param.replace(/\*([^\*]+)\*/g, "<i>$1</i>")
-    }
-    if(param.match(/_([^\*]+)_/)) {
-      param = param.replace(/_([^\*]+)_/g, "<i>$1</i>")
-    }
-    // If there is a link: [Title](http://example.com) turn into: <a href="http://example.com">Title</a>
-    if(param.match(/\[(.+)\]\((.+)\)/)) {
-      param = param.replace(/\[(.+)\]\((.+)\)/, '<a href="$2">$1</a>')
-    }
+    // Wrap bold text inside <b></b>
+    param = param.replace(/\*\*([^\*]+)\*\*/g, "<b>$1</b>")
+    param = param.replace(/__([^\*]+)__/g, "<b>$1</b>")
+
+    // Wrap italic text inside <i></i>
+    param = param.replace(/\*([^\*]+)\*/g, "<i>$1</i>")
+    param = param.replace(/_([^\*]+)_/g, "<i>$1</i>")
+
+    // Turn link: [Title](http://example.com) into: <a href="http://example.com">Title</a>
+    param = param.replace(/\[(.+)\]\((.+)\)/, '<a href="$2">$1</a>')
+
     return Object({ type: 'p', content: param});
   }
 }
