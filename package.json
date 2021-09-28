@@ -5,9 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Tue Nguyen",
   "license": "ISC",
-  "description": "",
+  "description": "A script that convert .md and .txt files into .html files",
   "dependencies": {
     "commander": "^8.1.0",
     "html-creator": "^0.4.4"
