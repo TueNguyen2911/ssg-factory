@@ -1,16 +1,18 @@
 # Javascript Static Site Generator (SSG)
-A Javascript command line program that converts **.txt** files into **.html** files. 
 
+A Javascript command line program that converts **.txt** and **.md** files into **.html** files. 
 
 ## Implemented features 
+
 - **Parsing titles** from .txt files => .html files to have `<h1>` and `<title>` tags
 - User can **specify output folder path**, instead of placing .html files in './dist' by default
 - If **input path** is a **folder**, it will look for all .txt files in the **folder** and in **subfolder(s)**
 - An `index.html` contains **links to other .html files** in folder.
 
-
 ## Example:
+
 ###### file.txt 
+
 ```
 Silver Blaze
 
@@ -24,6 +26,7 @@ sat down together to our breakfast one morning.
 ```
 
 will be converted to 
+
 ###### file.html
 
 ```html 
@@ -43,18 +46,37 @@ will be converted to
    </body>
 </html>
 ```
+
 ###### index.html for ./textfiles/
+
 ![Image of index.html](https://i.ibb.co/9YVnN1y/Screenshot-2021-09-14-003724.png)
+
 ## How to use: 
 
 ```
 node index.js -i ./textfiles/file.txt
+```
+
+Converting `file.txt` in `./textfiles/` to `html`
+
+```
 node index.js -i ./textfiles 
+```
+
+Converting all `.txt` files found in `./textfiles` folder
+
+```
 node index.js -i ./textfiles -o ./outputFiles
+```
+
+Converting all `.txt` files found in `./textfiles` folder and place `html` output files in `./outputFiles`
+
+```
 node index.js -i sometext.txt 
 ```
 
 ## Help 
+
 ```
 Usage: index [options]
 
@@ -64,5 +86,7 @@ Options:
   -i, --input <file path>  (required) transform .txt files into .html files
   -h, --help               display help for command
 ```
+
 ## Demo Link
+
 https://tuenguyen2911.github.io/static-ssg-dps909/
