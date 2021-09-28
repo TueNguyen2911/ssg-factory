@@ -47,7 +47,7 @@ const createHtml = (paragraphObj, titleObj) => {
   Look for title and convert text files into html files
   @params: filePath from commandLine
 */
-const createHtmlFiles = (filePath) => {
+const createHtmlFiles = (filePath, fileType) => {
   fs.readFile(filePath, 'utf8', (err, data) => {
     let htmlTitle = null; 
     let titleObj = new Object({ type: 'title', content: htmlTitle });
@@ -61,7 +61,11 @@ const createHtmlFiles = (filePath) => {
       .substr(htmlTitle ? htmlTitle.length : 0)
       .split(/\r?\n\r?\n/)
       .map(param => {
-        return Object({ type: 'p', content: param}); 
+        if (fileType == "md") {
+          return markdownToHtml(param)
+        } else {
+          return Object({ type: 'p', content: param});
+        }
       });
 
     const fileToHtml = createHtml(paragraphObj, titleObj);
@@ -71,6 +75,29 @@ const createHtmlFiles = (filePath) => {
   });
   filePaths.push(filePath);
 }
+
+const markdownToHtml = (param) => {
+  // If Heading 1 to 6, turn into corresponding h1 to h6 tag
+  if (param.match(/^\s*#{1,6}[^#]+$/)) {
+    const headerNum = param.match(/#/g).length
+    return Object({ type: `h${headerNum}`, content: param.replace(/^\s*#{1,6}([^#]+)$/, "$1")});
+  }
+  else {
+    // Wrap bold text inside <b></b>
+    param = param.replace(/\*\*([^\*]+)\*\*/g, "<b>$1</b>")
+    param = param.replace(/__([^\*]+)__/g, "<b>$1</b>")
+
+    // Wrap italic text inside <i></i>
+    param = param.replace(/\*([^\*]+)\*/g, "<i>$1</i>")
+    param = param.replace(/_([^\*]+)_/g, "<i>$1</i>")
+
+    // Turn link: [Title](http://example.com) into: <a href="http://example.com">Title</a>
+    param = param.replace(/\[(.+)\]\((.+)\)/, '<a href="$2">$1</a>')
+
+    return Object({ type: 'p', content: param});
+  }
+}
+
 /*
   Check if filePath is valid (folder or file .txt), if .txt file => call createHtmlFiles(filePath)
   @params: 
@@ -86,7 +113,10 @@ const readInput = (filePath) => {
     })
   }
   else if(stat.isFile() && filePath.split('.').pop() == "txt") {
-    createHtmlFiles(filePath);
+    createHtmlFiles(filePath, "txt");
+  }
+  else if (stat.isFile() && filePath.split(".").pop() == "md") {
+    createHtmlFiles(filePath, "md");
   }
 }
 
@@ -94,7 +124,7 @@ const readInput = (filePath) => {
 program.version('tue-1st-ssg 0.1', '-v, --version');
 program 
   .option('-o, --output <path>', 'specify a path for .html files output')
-  .requiredOption('-i, --input <file path>', '(required) transform .txt files into .html files');
+  .requiredOption('-i, --input <file path>', '(required) transform .txt or .md files into .html files');
 
 program.parse(process.argv)
 
