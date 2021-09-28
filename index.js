@@ -49,6 +49,9 @@ const createHtml = (paragraphObj, titleObj) => {
 */
 const createHtmlFiles = (filePath, fileType) => {
   fs.readFile(filePath, 'utf8', (err, data) => {
+    if(err)
+      return console.log(err); 
+    
     let htmlTitle = null; 
     let titleObj = new Object({ type: 'title', content: htmlTitle });
     //check for title, regEx checks if a line is followed by 2 newline \n\n\n
@@ -70,7 +73,9 @@ const createHtmlFiles = (filePath, fileType) => {
 
     const fileToHtml = createHtml(paragraphObj, titleObj);
     const fullFilePath = `${outputPath}/${filePath.match(/([^\/]+$)/g)[0].split('.')[0]}.html`; 
-    fs.writeFileSync(fullFilePath, fileToHtml.renderHTML());
+    fs.writeFile(fullFilePath, fileToHtml.renderHTML(), () => {
+      console.log(`${fullFilePath} is created`);
+    });
 
   });
   filePaths.push(filePath);
