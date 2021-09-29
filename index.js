@@ -99,7 +99,10 @@ const markdownToHtml = (param) => {
     // Wrap italic text inside <i></i>
     param = param.replace(/\*([^\*]+)\*/g, "<i>$1</i>")
     param = param.replace(/_([^\*]+)_/g, "<i>$1</i>")
-
+    //Wrap code inside <code>
+    param = param.replace(/\`([^\`].+?)\`/g, "<code>$1</code>");
+    param = param.replace(/(```([^`].+?)```)/gms, "<code>$2</code>")
+    
     // Turn link: [Title](http://example.com) into: <a href="http://example.com">Title</a>
     param = param.replace(/\[(.+)\]\((.+)\)/, '<a href="$2">$1</a>')
 
