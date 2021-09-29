@@ -50,7 +50,7 @@ const createHtml = (paragraphObj, titleObj) => {
 const createHtmlFiles = (filePath, fileType) => {
   fs.readFile(filePath, 'utf8', (err, data) => {
     if(err)
-      return console.log(err); 
+      return console.error(`Unable to read file ${filePath}`, err);
     
     let htmlTitle = null; 
     let titleObj = new Object({ type: 'title', content: htmlTitle });
@@ -73,10 +73,11 @@ const createHtmlFiles = (filePath, fileType) => {
 
     const fileToHtml = createHtml(paragraphObj, titleObj);
     const fullFilePath = `${outputPath}/${filePath.match(/([^\/]+$)/g)[0].split('.')[0]}.html`; 
-    fs.writeFile(fullFilePath, fileToHtml.renderHTML(), () => {
-      console.log(`${fullFilePath} is created`);
+    fs.writeFile(fullFilePath, fileToHtml.renderHTML(), (err) => {
+      if(err)
+        return console.error(`Unable to write file ${fullFilePath} `, err); 
+      console.log(`${fullFilePath} is created!`);
     });
-
   });
   filePaths.push(filePath);
 }
@@ -165,5 +166,9 @@ if(option.input) {
     }
   });
   indexHtml.document.addElementToType('body', { type: 'div', content: linkObj }) ;
-  fs.writeFileSync(`${outputPath}/index.html`, indexHtml.renderHTML());  
+  fs.writeFile(`${outputPath}/index.html`, indexHtml.renderHTML(), (err) => {
+    if(err)
+      return console.error(`Unable to write files ${outputPath} `, err); 
+    console.log(`${outputPath}/index.html is created`);
+  });  
 } 
