@@ -33,6 +33,8 @@ const createHtml = (paragraphObj, titleObj) => {
     type: "title",
     content: titleObj.content ? `${titleObj.content}` : "Article",
   });
+  console.log(titleObj.content)
+  // html.document.setTitle(titleObj.content ? `${titleObj.content}` : "Article")
   // Append link to stylesheet to the `<head>` HTML element
   html.document.addElementToType("head", {
     type: "link",
@@ -42,6 +44,7 @@ const createHtml = (paragraphObj, titleObj) => {
     },
   });
   html.document.addElementToType('body', bodyContent);
+  //console.log(html.document.getHTML());
   return html;
 }
 
@@ -61,13 +64,17 @@ const createHtmlFiles = (filePath, fileType) => {
       htmlTitle = data.match(/^.+(\r?\n\r?\n\r?\n)/)[0]; 
       titleObj['content'] = htmlTitle.match(/(\w+)/g).join(' ');
     }
-
+    let count = 0; 
     const paragraphObj = data
       .substr(htmlTitle ? htmlTitle.length : 0)
       .split(/\r?\n\r?\n/)
       .map(param => {
         if (fileType == "md") {
-          return markdownToHtml(param)
+          if (param.match(/^\s*#{1,6}[^#]+$/) && count == 0) {
+            titleObj['content'] = param.replace(/^\s*#{1,6}([^#]+)$/, "$1").trim();
+            count++;
+          }
+          return markdownToHtml(param);
         } else {
           return Object({ type: 'p', content: param});
         }
