@@ -3,7 +3,8 @@ const program = new Command();
 const fs = require('fs');
 const htmlCreator = require('html-creator');
 var filePaths = []; //keep track of .txt files converted
-var outputPath = './dist'
+var outputPath = './dist';
+const defaultLang = "en-CA";
 /** 
 *  Create htmlCreator object using 2 params
 *  @param: paragraphObj, an object of {type, content} for <p>, for .md file paragraphObj is body object containing more than <p>, <a>
