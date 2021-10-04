@@ -198,27 +198,29 @@ if(option.config){
   else{
     //parse JSON contents
     let rawData = fs.readFileSync(option.config);
-    let configOpts = JSON.parse(rawData);
-    //if the JSON file isn't empty
-    if(configOpts){
-      if(configOpts.output && fs.existsSync(configOpts.output)){
-        let tempPath = fs.statSync(configOpts.output); 
-        if(tempPath.isDirectory())
-          outputPath = configOpts.output;
-      }
-
-      if(configOpts.input && fs.existsSync(configOpts.input)){
-        option.lang = configOpts.lang;
-        processInput(configOpts.input);
-      }
-      else if(!configOpts.input)
-        console.error(`error: input '<file path>' not specified in config file`);
-      else
-        console.error(`error: no file or directory at input file path ${configOpts.input}, please check file path`);
+    let configOpts ={};
+    try{
+      configOpts = JSON.parse(rawData);
+    } catch (e){
+      console.error(`error parsing config file: ${e}`);
+      process.exit(-1);
     }
+    //if the JSON file isn't empty
+    if(configOpts.output && fs.existsSync(configOpts.output)){
+      let tempPath = fs.statSync(configOpts.output); 
+      if(tempPath.isDirectory())
+        outputPath = configOpts.output;
+    }
+
+    if(configOpts.input && fs.existsSync(configOpts.input)){
+      option.lang = configOpts.lang;
+      processInput(configOpts.input);
+    }
+    else if(!configOpts.input)
+      console.error(`error: input '<file path>' not specified in config file`);
     else
-      console.error(`error: input '<file path>' not specified in config file`)
-  }
+      console.error(`error: no file or directory at input file path ${configOpts.input}, please check file path`);
+  }  
 }
 else{
   if(option.output) {
