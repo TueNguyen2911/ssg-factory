@@ -143,50 +143,94 @@ const readInput = (filePath) => {
   }
 }
 
+/**
+*  Process input <filepath>
+*  @param: filePath from commandLine
+*/
+const processInput = (filepath) =>{
+if (!fs.existsSync(outputPath)) 
+      fs.mkdirSync(outputPath);
+    readInput(filepath);
+    //delete previous html files in the output folder after generating new html files
+    fs.readdirSync(outputPath).forEach(file => {
+      const outputFolderFile = `${outputPath}/${file}`
+      if(filePaths.indexOf(outputFolderFile) < 0 && outputFolderFile.split('.').pop() == "html") {
+        fs.unlink(outputFolderFile, (err) => {
+          if(err) console.log(err);
+        })
+      }
+    });
+    //creating index.html linking all html files
+    const indexHtml = createHtml(null, {type: 'title', content: 'Index'});
+    const linkObj = filePaths.map(param => {
+      return {
+        type: 'a', 
+        //replace white space with %20
+        attributes: {href: `${param.match(/([^\/]+$)/g)[0].split('.')[0].replace(/\s/g, '%20')}.html`, style: 'display: block'}, 
+        content: `${param.match(/([^\/]+$)/g)[0].split('.')[0]}`
+      }
+    });
+    indexHtml.document.addElementToType('body', { type: 'div', content: linkObj }) ;
+    fs.writeFile(`${outputPath}/index.html`, indexHtml.renderHTML().replace(/<html>/, `<html lang="${option.lang ? option.lang : defaultLang}">`), (err) => {
+      if(err)
+        return console.error(`Unable to create index.html file`, err); 
+      console.log(`${outputPath}/index.html created`);
+    }); 
+}
+
 //configure program
 program.version('tue-1st-ssg 0.1', '-v, --version');
 program 
   .option('-o, --output <path>', 'specify a path for .html files output')
   .option('-l, --lang <language code>', 'adding a language to HTML document')
-  .requiredOption('-i, --input <file path>', '(required) transform .txt or .md files into .html files');
+  .option('-i, --input <file path>', '(required) transform .txt or .md files into .html files')
+  .option('-c, --config <config file path>', 'use stored commands in config file');
 
 program.parse(process.argv)
 
 //Look for option
 const option = program.opts();
-if(option.output) {
-  let tempPath = fs.statSync(option.output); 
-  if(tempPath.isDirectory())
-    outputPath = option.output
-}
 
-if(option.input) {
-  if (!fs.existsSync(outputPath)) 
-    fs.mkdirSync(outputPath);
-  readInput(option.input);
-  //delete previous html files in the output folder after generating new html files
-  fs.readdirSync(outputPath).forEach(file => {
-    const outputFolderFile = `${outputPath}/${file}`
-    if(filePaths.indexOf(outputFolderFile) < 0 && outputFolderFile.split('.').pop() == "html") {
-      fs.unlink(outputFolderFile, (err) => {
-        if(err) console.log(err);
-      })
+if(option.config){
+  //if specified file doesn't exist
+  if(!fs.existsSync(option.config))
+    console.error(`Config file "${option.config}" doesn't exist, please check file path.`);
+  else{
+    //parse JSON contents
+    let rawData = fs.readFileSync(option.config);
+    let configOpts ={};
+    try{
+      configOpts = JSON.parse(rawData);
+    } catch (e){
+      console.error(`error parsing config file: ${e}`);
+      process.exit(-1);
     }
-  });
-  //creating index.html linking all html files
-  const indexHtml = createHtml(null, {type: 'title', content: 'Index'});
-  const linkObj = filePaths.map(param => {
-    return {
-      type: 'a', 
-      //replace white space with %20
-      attributes: {href: `${param.match(/([^\/]+$)/g)[0].split('.')[0].replace(/\s/g, '%20')}.html`, style: 'display: block'}, 
-      content: `${param.match(/([^\/]+$)/g)[0].split('.')[0]}`
+    //if the JSON file isn't empty
+    if(configOpts.output && fs.existsSync(configOpts.output)){
+      let tempPath = fs.statSync(configOpts.output); 
+      if(tempPath.isDirectory())
+        outputPath = configOpts.output;
     }
-  });
-  indexHtml.document.addElementToType('body', { type: 'div', content: linkObj }) ;
-  fs.writeFile(`${outputPath}/index.html`, indexHtml.renderHTML().replace(/<html>/, `<html lang="${option.lang ? option.lang : defaultLang}">`), (err) => {
-    if(err)
-      return console.error(`Unable to create index.html file`, err); 
-    console.log(`${outputPath}/index.html created`);
-  }); 
+
+    if(configOpts.input && fs.existsSync(configOpts.input)){
+      option.lang = configOpts.lang;
+      processInput(configOpts.input);
+    }
+    else if(!configOpts.input)
+      console.error(`error: input '<file path>' not specified in config file`);
+    else
+      console.error(`error: no file or directory at input file path ${configOpts.input}, please check file path`);
+  }  
+}
+else{
+  if(option.output) {
+    let tempPath = fs.statSync(option.output); 
+    if(tempPath.isDirectory())
+      outputPath = option.output
+  }
+  
+  if(option.input) 
+    processInput(option.input);
+  else
+    console.error(`error: required option '-i, --input <file path>' not specified`);
 } 
