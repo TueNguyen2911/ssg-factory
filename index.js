@@ -28,13 +28,7 @@ const createHtml = (paragraphObj, titleObj) => {
   if (paragraphObj == null) {
     bodyContent.pop();
   } 
-  // Append title to the `<head>` HTML element
-  html.document.addElementToType("head", {
-    type: "title",
-    content: titleObj.content ? `${titleObj.content}` : "Article",
-  });
-  console.log(titleObj.content)
-  // html.document.setTitle(titleObj.content ? `${titleObj.content}` : "Article")
+  html.document.setTitle(titleObj.content ? `${titleObj.content}` : "Article")
   // Append link to stylesheet to the `<head>` HTML element
   html.document.addElementToType("head", {
     type: "link",
@@ -44,7 +38,7 @@ const createHtml = (paragraphObj, titleObj) => {
     },
   });
   html.document.addElementToType('body', bodyContent);
-  //console.log(html.document.getHTML());
+  console.log(html.document.findElementByType('title'));
   return html;
 }
 
