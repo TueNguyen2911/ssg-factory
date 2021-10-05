@@ -12,6 +12,7 @@ A Javascript command line program that converts **.txt** and **.md** files into 
 - **Parsing Bold** text from .md files => .html files to have `<b>` tags
 - **Parsing Italic** text from .md files => .html files to have `<i>` tags
 - **Parsing Links** from .md files => .html files to have `<a href="">` tags
+- User can **specify a JSON formatted config file** to store options, instead of passing options as command line arguments
 
 ## Example:
 
@@ -78,6 +79,14 @@ Converting all `.txt` files found in `./textfiles` folder and place `html` outpu
 ```
 node index.js -i sometext.txt 
 node index.js -i markdownFile.md 
+```
+
+Parsing JSON formatted config file with options.
+
+Use of `-c` or `--config` will ignore `-i`, `-o`, `-l` options in the command line. 
+
+```
+node index.js -c configFile
 ```
 
 ## Help 
