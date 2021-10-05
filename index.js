@@ -38,7 +38,6 @@ const createHtml = (paragraphObj, titleObj) => {
     },
   });
   html.document.addElementToType('body', bodyContent);
-  console.log(html.document.findElementByType('title'));
   return html;
 }
 
@@ -150,7 +149,8 @@ if (!fs.existsSync(outputPath))
       const outputFolderFile = `${outputPath}/${file}`
       if(filePaths.indexOf(outputFolderFile) < 0 && outputFolderFile.split('.').pop() == "html") {
         fs.unlink(outputFolderFile, (err) => {
-          if(err) console.log(err);
+          if(err) 
+            console.error(err);
         })
       }
     });
@@ -168,7 +168,7 @@ if (!fs.existsSync(outputPath))
     fs.writeFile(`${outputPath}/index.html`, indexHtml.renderHTML().replace(/<html>/, `<html lang="${option.lang ? option.lang : defaultLang}">`), (err) => {
       if(err)
         return console.error(`Unable to create index.html file`, err); 
-      console.log(`${outputPath}/index.html created`);
+      console.log(` \u001b[32m ${outputPath}/index.html created`);
     }); 
 }
 
