@@ -1,5 +1,6 @@
 const fs = require('fs');
 const htmlCreator = require('html-creator');
+const path = require('path');
 class SSG {
     filePaths = [];
     inputPath = null;
@@ -94,16 +95,16 @@ class SSG {
                 titleObj.content = param.replace(/^\s*#{1,6}([^#]+)$/, "$1").trim();
                 count++;
                 }
-                return markdownToHtml(param);
+                return this.markdownToHtml(param);
             } else {
                 return Object({ type: 'p', content: param});
             }
             });
     
-        const fileToHtmlCreator = createHtml(bodyObj, titleObj);
+        const fileToHtmlCreator = this.createHtml(bodyObj, titleObj);
         const fullOutPutPath = path.join(this.outputPath, `${path.basename(filePath, fileType)}.html`);
         //since html creator doesn't support adding attribute to <html>, adding `lang` here seems weird
-        writeHTMLFiles(fullOutPutPath, fileToHtmlCreator);
+        this.writeHTMLFiles(fullOutPutPath, fileToHtmlCreator);
         });
         filePaths.push(path.basename(filePath));
     }
@@ -147,14 +148,14 @@ class SSG {
         if (!stat.isFile() && stat.isDirectory()) {
         fs.readdirSync(filePath).forEach((inDirectory) => {
             //recursive until a .txt or .md file is recognized
-            readInput(path.join(filePath, inDirectory));
+            this.readInput(path.join(filePath, inDirectory));
             })
         }
         else if (stat.isFile() && path.extname(filePath) == ".txt") {
-            createHtmlFiles(filePath, ".txt");
+            this.createHtmlFiles(filePath, ".txt");
         }
         else if (stat.isFile() && path.extname(filePath) == ".md") {
-            createHtmlFiles(filePath, ".md");
+            this.createHtmlFiles(filePath, ".md");
         }
     }
   
@@ -162,7 +163,7 @@ class SSG {
   *  Process input <filepath>
   *  @param: input filePath from commandLine
   */
-    processInput = async (filepath) => {
+    processInput = async (filePath) => {
         if (!fs.existsSync(this.outputPath)) 
             fs.mkdirSync(this.outputPath);
         //delete previous html files in the output folder after generating new html files
@@ -174,7 +175,7 @@ class SSG {
         })
         });
         //readInput and write all files
-        readInput(filePath);
+        this.readInput(filePath);
         //creating index.html linking all html files
         const linkObj = this.filePaths.map(param => {
         return {
@@ -184,9 +185,10 @@ class SSG {
             content: `${param.match(/([^\/]+$)/g)[0].split('.')[0]}`
         }
         });
-        const indexHtmlCreator = createHtml(linkObj, {type: 'title', content: 'Index'});
+        console.log(linkObj);
+        const indexHtmlCreator = this.createHtml(linkObj, {type: 'title', content: 'Index'});
         const indexOutputPath = path.join(this.outputPath, 'index.html');
-        writeHTMLFiles(indexOutputPath, indexHtmlCreator);
+        this.writeHTMLFiles(indexOutputPath, indexHtmlCreator);
     }
 }
 module.exports.SSG = SSG;
