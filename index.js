@@ -4,7 +4,7 @@ const fs = require('fs');
 const htmlCreator = require('html-creator');
 var filePaths = []; //keep track of .txt files converted
 var outputPath = './dist';
-const lang = "en-CA";
+var lang = "en-CA";
 const path = require('path');
 const { SSG } = require('./ssg.js');
 
@@ -196,48 +196,58 @@ const option = program.opts();
 
 if(option.config){
   //if specified file doesn't exist
-  if(!fs.existsSync(option.config))
-    console.error(`Config file "${option.config}" doesn't exist, please check file path.`);
-  else{
-    //parse JSON contents
-    let rawData = fs.readFileSync(option.config);
-    let configOpts ={};
-    try{
-      configOpts = JSON.parse(rawData);
-    } catch (e){
-      console.error(`error parsing config file: ${e}`);
+  // if(!fs.existsSync(option.config))
+  //   console.error(`Config file "${option.config}" doesn't exist, please check file path.`);
+  // else{
+  //   //parse JSON contents
+  //   let rawData = fs.readFileSync(option.config);
+  //   let configOpts ={};
+  //   try{
+  //     configOpts = JSON.parse(rawData);
+  //   } catch (e){
+  //     console.error(`error parsing config file: ${e}`);
+  //     process.exit(-1);
+  //   }
+  //   //if the JSON file isn't empty
+  //   if(configOpts.output && fs.existsSync(configOpts.output)){
+  //     let tempPath = fs.statSync(configOpts.output); 
+  //     if(tempPath.isDirectory())
+  //       outputPath = configOpts.output;
+  //   }
+
+  //   if(configOpts.input && fs.existsSync(configOpts.input)){
+  //     option.lang = configOpts.lang;
+  //     processInput(configOpts.input);
+  //   }
+  //   else if(!configOpts.input)
+  //     console.error(`error: input '<file path>' not specified in config file`);
+  //   else
+  //     console.error(`error: no file or directory at input file path ${configOpts.input}, please check file path`);
+  // }  
+  try {
+    let configData = fs.readFileSync(option.config);
+    let configOptions = JSON.parse(configData); 
+    for(const [key, value] of Object.entries(configOptions)) {
+      value || value.length > 0 ? option[`${key}`] = `${value}` : option[`${key}`] = undefined;
+    }
+    if(!option.input) {
+      console.error(`error: input <file or directory> is not specified in config file ${option.config}`);
       process.exit(-1);
     }
-    //if the JSON file isn't empty
-    if(configOpts.output && fs.existsSync(configOpts.output)){
-      let tempPath = fs.statSync(configOpts.output); 
-      if(tempPath.isDirectory())
-        outputPath = configOpts.output;
-    }
-
-    if(configOpts.input && fs.existsSync(configOpts.input)){
-      option.lang = configOpts.lang;
-      processInput(configOpts.input);
-    }
-    else if(!configOpts.input)
-      console.error(`error: input '<file path>' not specified in config file`);
-    else
-      console.error(`error: no file or directory at input file path ${configOpts.input}, please check file path`);
-  }  
+  } catch(error) {
+  console.error(`Can't read or parse config file ${option.config}\n ${error}`);
+  process.exit(-1);
+  }
 }
-else{
-  if(option.output) {
-    let tempPath = fs.statSync(option.output); 
-    if(tempPath.isDirectory())
-      outputPath = option.output
-  }
-  if(option.lang) {
-    lang = option.lang;
-  }
-  if(option.input) {
-    var ssg = new SSG(option.input, outputPath, lang);
-    processInput(option.input);
-  }
-  else
-    console.error(`error: required option '-i, --input <file path>' not specified`);
-} 
+if(option.output) {
+  outputPath = option.output
+}
+if(option.lang) {
+  lang = option.lang;
+}
+if(option.input) {
+  var ssg = new SSG(option.input, outputPath, lang);
+  processInput(option.input);
+}
+else
+  console.error(`error: required option '-i, --input <file path>' not specified`);
