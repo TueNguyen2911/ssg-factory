@@ -55,7 +55,7 @@ const writeHTMLFiles = (fullOutPutPath, fileToHtmlCreator) => {
   fs.writeFile(fullOutPutPath, fileToHtmlCreator.renderHTML()
   .replace(/<html>/, `<html lang="${lang}">`), (err) => {
   if(err) 
-    return console.error(`Unable to create file ${fullOutPutPath}`);
+    return console.error('\x1B[31m', `Unable to create file ${fullOutPutPath}`, '\x1B[0m');
   else 
     console.log('\x1b[36m', `${fullOutPutPath} is created`, '\x1b[0m');
   });
@@ -162,7 +162,7 @@ const processInput = async (filepath) =>{
     const outputFolderFile = `${outputPath}/${file}`;
     fs.unlink(outputFolderFile, (err) => {
       if(err) 
-        console.error(err);
+        console.error('\x1B[31m', `Cant delete file ${outputFolderFile} ${err}`, '\x1B[31m');
     })
   });
   //readInput and write all files
@@ -195,35 +195,6 @@ program.parse(process.argv)
 const option = program.opts();
 
 if(option.config){
-  //if specified file doesn't exist
-  // if(!fs.existsSync(option.config))
-  //   console.error(`Config file "${option.config}" doesn't exist, please check file path.`);
-  // else{
-  //   //parse JSON contents
-  //   let rawData = fs.readFileSync(option.config);
-  //   let configOpts ={};
-  //   try{
-  //     configOpts = JSON.parse(rawData);
-  //   } catch (e){
-  //     console.error(`error parsing config file: ${e}`);
-  //     process.exit(-1);
-  //   }
-  //   //if the JSON file isn't empty
-  //   if(configOpts.output && fs.existsSync(configOpts.output)){
-  //     let tempPath = fs.statSync(configOpts.output); 
-  //     if(tempPath.isDirectory())
-  //       outputPath = configOpts.output;
-  //   }
-
-  //   if(configOpts.input && fs.existsSync(configOpts.input)){
-  //     option.lang = configOpts.lang;
-  //     processInput(configOpts.input);
-  //   }
-  //   else if(!configOpts.input)
-  //     console.error(`error: input '<file path>' not specified in config file`);
-  //   else
-  //     console.error(`error: no file or directory at input file path ${configOpts.input}, please check file path`);
-  // }  
   try {
     let configData = fs.readFileSync(option.config);
     let configOptions = JSON.parse(configData); 
@@ -231,11 +202,11 @@ if(option.config){
       value || value.length > 0 ? option[`${key}`] = `${value}` : option[`${key}`] = undefined;
     }
     if(!option.input) {
-      console.error(`error: input <file or directory> is not specified in config file ${option.config}`);
+      console.error('\x1B[31m', `error: input <file or directory> is not specified in config file ${option.config}`, '\x1B[0m');
       process.exit(-1);
     }
   } catch(error) {
-  console.error(`Can't read or parse config file ${option.config}\n ${error}`);
+  console.error('\x1B[31m', `Can't read or parse config file ${option.config}\n ${error}`, '\x1B[0m');
   process.exit(-1);
   }
 }
@@ -250,4 +221,4 @@ if(option.input) {
   processInput(option.input);
 }
 else
-  console.error(`error: required option '-i, --input <file path>' not specified`);
+  console.error('\x1B[31m', `error: required option '-i, --input <file path>' not specified`, '\x1B[0m');
