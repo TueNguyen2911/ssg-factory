@@ -4,18 +4,24 @@ const fs = require('fs');
 const htmlCreator = require('html-creator');
 var filePaths = []; //keep track of .txt files converted
 var outputPath = './dist';
-const defaultLang = "en-CA";
+const lang = "en-CA";
+const path = require('path');
+const { SSG } = require('./ssg.js');
+
 /** 
 *  Create htmlCreator object using 2 params
-*  @param: paragraphObj, an object of {type, content} for <p>, for .md file paragraphObj is body object containing more than <p>, <a>
+*  @param: bodyObj, an object of {type, content} for <p>, for .md file bodyObj is body object containing more than <p>, <a>
 *  @return: an object of type htmlCreator, can use htmlRender() to convert to string
 */
-const createHtml = (paragraphObj, titleObj) => {
+const createHtml = (bodyObj, titleObj) => {
   const html = new htmlCreator().withBoilerplate();
+  if(bodyObj[0].type == 'h1') {
+    bodyObj.shift();
+  }
   var bodyContent = [{
     type: 'div',
-    attributes: {className: 'paragraphObj'},
-    content: paragraphObj
+    attributes: {className: 'bodyObj'},
+    content: bodyObj
   }]
   // if a title is found, add the title wrapped inside `<h1>`
   // tag to the top of the `<body>` HTML element
@@ -25,9 +31,9 @@ const createHtml = (paragraphObj, titleObj) => {
       content: titleObj.content,
     });
   }
-  if (paragraphObj == null) {
+  if (bodyObj == null) 
     bodyContent.pop();
-  } 
+  
   html.document.setTitle(titleObj.content ? `${titleObj.content}` : "Article")
   // Append link to stylesheet to the `<head>` HTML element
   html.document.addElementToType("head", {
@@ -40,31 +46,44 @@ const createHtml = (paragraphObj, titleObj) => {
   html.document.addElementToType('body', bodyContent);
   return html;
 }
-
+/**
+ * 
+ * @param {*} fullOutPutPath the output path + filename + file extension 
+ * @param {*} fileToHtmlCreator the htmlCreator object created from the input file
+ */
+const writeHTMLFiles = (fullOutPutPath, fileToHtmlCreator) => {
+  fs.writeFile(fullOutPutPath, fileToHtmlCreator.renderHTML()
+  .replace(/<html>/, `<html lang="${lang}">`), (err) => {
+  if(err) 
+    return console.error(`Unable to create file ${fullOutPutPath}`);
+  else 
+    console.log('\x1b[36m', `${fullOutPutPath} is created`, '\x1b[0m');
+  });
+} 
 /** 
 *  Look for title and convert text files into html files
 *  @param: filePath from commandLine
 */
 const createHtmlFiles = (filePath, fileType) => {
+  
   fs.readFile(filePath, 'utf8', (err, data) => {
     if(err)
       return console.error(`Unable to read file ${filePath}`, err);
-    
-    let htmlTitle = null; 
-    let titleObj = new Object({ type: 'title', content: htmlTitle });
+    let titleObj = new Object({ type: 'title', content: null });
+
+
     //check for title, regEx checks if a line is followed by 2 newline \n\n\n
     if(data.match(/^.+(\r?\n\r?\n\r?\n)/)) {
-      htmlTitle = data.match(/^.+(\r?\n\r?\n\r?\n)/)[0]; 
-      titleObj['content'] = htmlTitle.match(/(\w+)/g).join(' ');
+      titleObj.content = data.match(/^.+(\r?\n\r?\n\r?\n)/)[0].match(/(\w+)/g).join(' ');
     }
     let count = 0; 
-    const paragraphObj = data
-      .substr(htmlTitle ? htmlTitle.length : 0)
+    const bodyObj = data
+      .substr(titleObj.content ? titleObj.content.length : 0)
       .split(/\r?\n\r?\n/)
       .map(param => {
-        if (fileType == "md") {
+        if (fileType == ".md") {
           if (param.match(/^\s*#{1,6}[^#]+$/) && count == 0) {
-            titleObj['content'] = param.replace(/^\s*#{1,6}([^#]+)$/, "$1").trim();
+            titleObj.content = param.replace(/^\s*#{1,6}([^#]+)$/, "$1").trim();
             count++;
           }
           return markdownToHtml(param);
@@ -73,23 +92,18 @@ const createHtmlFiles = (filePath, fileType) => {
         }
       });
 
-    const fileToHtml = createHtml(paragraphObj, titleObj);
-    const fullFilePath = `${outputPath}/${filePath.match(/([^\/]+$)/g)[0].split('.')[0]}.html`; 
-
+    const fileToHtmlCreator = createHtml(bodyObj, titleObj);
+    const fullOutPutPath = path.join(outputPath, `${path.basename(filePath, fileType)}.html`);
     //since html creator doesn't support adding attribute to <html>, adding `lang` here seems weird
-    fs.writeFile(fullFilePath, fileToHtml.renderHTML().replace(/<html>/, `<html lang="${option.lang ? option.lang : defaultLang}">`), (err) => {
-      if(err) 
-        return console.error(`Unable to create file ${fullFilePath}`);
-      console.log(`${fullFilePath} is created`);
-    });
+    writeHTMLFiles(fullOutPutPath, fileToHtmlCreator);
   });
-  filePaths.push(filePath);
+  filePaths.push(path.basename(filePath));
 }
 
 const markdownToHtml = (param) => {
   // If Heading 1 to 6, turn into corresponding h1 to h6 tag
   if (param.match(/^\s*#{1,6}[^#]+$/)) {
-    const headerNum = param.match(/#/g).length
+    const headerNum = param.match(/#/g).length;
     return Object({ type: `h${headerNum}`, content: param.replace(/^\s*#{1,6}([^#]+)$/, "$1")});
   }
   else {
@@ -120,56 +134,51 @@ const markdownToHtml = (param) => {
 *  @param: filePath from commandLine
 *  @param: isCheckPath, boolean for checking if the function is for checking output path
 */
-const readInput = (filePath) => {
-  const stat = fs.lstatSync(filePath); 
+const readInput = async (filePath) => {
+  const stat = fs.lstatSync(filePath);
   if(!stat.isFile() && stat.isDirectory()) {
-    fs.readdirSync(filePath).forEach((file) => {
-        //recursive until a .txt file is recognized
-        readInput(`${filePath}/${file}`);
+    fs.readdirSync(filePath).forEach((inDirectory) => {
+        //recursive until a .txt or .md file is recognized
+        readInput(path.join(filePath, inDirectory));
     })
   }
-  else if(stat.isFile() && filePath.split('.').pop() == "txt") {
-    createHtmlFiles(filePath, "txt");
+  else if(stat.isFile() && path.extname(filePath) == ".txt") {
+    createHtmlFiles(filePath, ".txt");
   }
-  else if (stat.isFile() && filePath.split(".").pop() == "md") {
-    createHtmlFiles(filePath, "md");
+  else if (stat.isFile() && path.extname(filePath) == ".md") {
+    createHtmlFiles(filePath, ".md");
   }
 }
 
 /**
 *  Process input <filepath>
-*  @param: filePath from commandLine
+*  @param: input filePath from commandLine
 */
-const processInput = (filepath) =>{
-if (!fs.existsSync(outputPath)) 
-      fs.mkdirSync(outputPath);
-    readInput(filepath);
-    //delete previous html files in the output folder after generating new html files
-    fs.readdirSync(outputPath).forEach(file => {
-      const outputFolderFile = `${outputPath}/${file}`
-      if(filePaths.indexOf(outputFolderFile) < 0 && outputFolderFile.split('.').pop() == "html") {
-        fs.unlink(outputFolderFile, (err) => {
-          if(err) 
-            console.error(err);
-        })
-      }
-    });
-    //creating index.html linking all html files
-    const indexHtml = createHtml(null, {type: 'title', content: 'Index'});
-    const linkObj = filePaths.map(param => {
-      return {
-        type: 'a', 
-        //replace white space with %20
-        attributes: {href: `${param.match(/([^\/]+$)/g)[0].split('.')[0].replace(/\s/g, '%20')}.html`, style: 'display: block'}, 
-        content: `${param.match(/([^\/]+$)/g)[0].split('.')[0]}`
-      }
-    });
-    indexHtml.document.addElementToType('body', { type: 'div', content: linkObj }) ;
-    fs.writeFile(`${outputPath}/index.html`, indexHtml.renderHTML().replace(/<html>/, `<html lang="${option.lang ? option.lang : defaultLang}">`), (err) => {
-      if(err)
-        return console.error(`Unable to create index.html file`, err); 
-      console.log(` \u001b[32m ${outputPath}/index.html created`);
-    }); 
+const processInput = async (filepath) =>{
+  if (!fs.existsSync(outputPath)) 
+    fs.mkdirSync(outputPath);
+  //delete previous html files in the output folder after generating new html files
+  fs.readdirSync(outputPath).forEach(file => {
+    const outputFolderFile = `${outputPath}/${file}`;
+    fs.unlink(outputFolderFile, (err) => {
+      if(err) 
+        console.error(err);
+    })
+  });
+  //readInput and write all files
+  readInput(filepath);
+  //creating index.html linking all html files
+  const linkObj = filePaths.map(param => {
+    return {
+      type: 'a', 
+      //replace white space with %20
+      attributes: {href: `${param.match(/([^\/]+$)/g)[0].split('.')[0].replace(/\s/g, '%20')}.html`, style: 'display: block'}, 
+      content: `${param.match(/([^\/]+$)/g)[0].split('.')[0]}`
+    }
+  });
+  const indexHtmlCreator = createHtml(linkObj, {type: 'title', content: 'Index'});
+  const indexOutputPath = path.join(outputPath, 'index.html');
+  writeHTMLFiles(indexOutputPath, indexHtmlCreator);
 }
 
 //configure program
@@ -222,9 +231,13 @@ else{
     if(tempPath.isDirectory())
       outputPath = option.output
   }
-  
-  if(option.input) 
+  if(option.lang) {
+    lang = option.lang;
+  }
+  if(option.input) {
+    var ssg = new SSG(option.input, outputPath, lang);
     processInput(option.input);
+  }
   else
     console.error(`error: required option '-i, --input <file path>' not specified`);
 } 
