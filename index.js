@@ -32,7 +32,6 @@ if(option.config){
   process.exit(-1);
   }
 }
-console.log(option.input)
 if(option.input) {
   var ssg = new SSG(option.input, option.output, option.lang);
   ssg.processInput(option.input);

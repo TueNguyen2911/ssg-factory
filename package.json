@@ -10,6 +10,6 @@
   "description": "A script that convert .md and .txt files into .html files",
   "dependencies": {
     "commander": "^8.1.0",
-    "html-creator": "^0.4.4"
+    "showdown": "^1.9.1"
   }
 }
