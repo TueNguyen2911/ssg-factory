@@ -2,6 +2,9 @@
   "name": "tueng-cli-ssg",
   "version": "0.0.1",
   "main": "index.js",
+  "bin": {
+    "ssg": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,5 +15,26 @@
     "commander": "^8.1.0",
     "highlight.js": "^11.3.1",
     "markdown-it": "^12.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.1.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.0",
+    "lint-staged": "^11.2.6",
+    "prettier": "^2.4.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "npx prettier --write",
+      "npx eslint"
+    ]
   }
 }

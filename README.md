@@ -1,8 +1,8 @@
 # Javascript Static Site Generator (SSG)
 
-A Javascript command line program that converts **.txt** and **.md** files into **.html** files. 
+A Javascript command line program that converts **.txt** and **.md** files into **.html** files.
 
-## Implemented features 
+## Implemented features
 
 - **Parsing titles** from .txt files => .html files to have `<h1>` and `<title>` tags
 - User can **specify output folder path**, instead of placing .html files in './dist' by default
@@ -16,7 +16,7 @@ A Javascript command line program that converts **.txt** and **.md** files into 
 
 ## Example:
 
-###### file.txt 
+###### file.txt
 
 ```
 Silver Blaze
@@ -30,25 +30,29 @@ sat down together to our breakfast one morning.
 “To Dartmoor; to King’s Pyland.”
 ```
 
-will be converted to 
+will be converted to
 
 ###### file.html
 
-```html 
+```html
 <!DOCTYPE html>
 <html>
-   <head>
-      <title>Silver Blaze</title>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
-   </head>
-   <h1>Silver Blaze</h1>
-   <body>
-      <p>I am afraid, Watson, that I shall have to go,” said Holmes, as we
-         sat down together to our breakfast one morning.
-      </p>
-      <p>“Go! Where to?”</p>
-      <p>“To Dartmoor; to King’s Pyland.”</p>
-   </body>
+  <head>
+    <title>Silver Blaze</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+    />
+  </head>
+  <h1>Silver Blaze</h1>
+  <body>
+    <p>
+      I am afraid, Watson, that I shall have to go,” said Holmes, as we sat down
+      together to our breakfast one morning.
+    </p>
+    <p>“Go! Where to?”</p>
+    <p>“To Dartmoor; to King’s Pyland.”</p>
+  </body>
 </html>
 ```
 
@@ -56,7 +60,7 @@ will be converted to
 
 ![Image of index.html](https://i.ibb.co/9YVnN1y/Screenshot-2021-09-14-003724.png)
 
-## How to use: 
+## How to use:
 
 ```
 node index.js -i ./textfiles/file.txt
@@ -65,7 +69,7 @@ node index.js -i ./textfiles/file.txt
 Converting `file.txt` in `./textfiles/` to `html`
 
 ```
-node index.js -i ./textfiles 
+node index.js -i ./textfiles
 ```
 
 Converting all `.txt` files found in `./textfiles` folder
@@ -77,19 +81,19 @@ node index.js -i ./textfiles -o ./outputFiles
 Converting all `.txt` files found in `./textfiles` folder and place `html` output files in `./outputFiles`
 
 ```
-node index.js -i sometext.txt 
-node index.js -i markdownFile.md 
+node index.js -i sometext.txt
+node index.js -i markdownFile.md
 ```
 
 Parsing JSON formatted config file with options.
 
-Use of `-c` or `--config` will ignore `-i`, `-o`, `-l` options in the command line. 
+Use of `-c` or `--config` will ignore `-i`, `-o`, `-l` options in the command line.
 
 ```
 node index.js -c configFile
 ```
 
-## Help 
+## Help
 
 ```
 Usage: index [options]
