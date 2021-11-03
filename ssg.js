@@ -1,8 +1,17 @@
 const fs = require('fs');
 const { resolve } = require('path');
 const path = require('path');
-var showdown  = require('showdown'),
-    converter = new showdown.Converter();
+const hljs = require("highlight.js");
+const md = require("markdown-it")({
+  highlight: (str, lang) => {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(str, { language: lang }).value;
+      } catch (__) {}
+    }
+    return "";
+  },
+});
 
 class SSG {
     filePaths = [];
@@ -13,6 +22,10 @@ class SSG {
         this.outputPath = outputPath ? outputPath : './dist';
         this.lang = lang ? lang : 'en-CA';
     }
+    /**
+     * createIndexHtmlFile creates index file. 
+     * @returns 
+     */
     createIndexHtmlFile = () => {
         return new Promise(async (resolve, reject) => {
             const links = this.generatedFiles.map((param, index) => {
@@ -22,18 +35,25 @@ class SSG {
                 return line;
             }).join('');
             const html = this.createHTML2(links, 'Index'); 
-            await this.writeHTMLFile(path.join(this.outputPath, "index.html"), html)
+            await this.writeHTMLFile(path.join(this.outputPath, "index.html"), html);
             resolve();
         })
     }
+    /**
+     * createHTML2 interpolates "htmlString" and "title" into the html boiler plate
+     * @param {string} htmlString the body of the html file
+     * @param {string} title title of the html file
+     * @returns the html file as string
+     */
     createHTML2 = (htmlString, title) => {
         const html = `<!DOCTYPE html>
         <html lang="${this.lang}">
           <head>
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-            <title>${title}</title>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
+            <title>${title}</title>
           </head>
           <body>
             <main>
@@ -85,7 +105,7 @@ class SSG {
                 if(fileType == ".md") {
                     if (data.match(/^\s*#{1,6}[^#\n]+/)) 
                         title = data.match(/^\s*#{1,6}[^#\n]+/)[0].replace(/\#{1,6}/, "").trim();
-                    html = this.createHTML2(converter.makeHtml(data), title);
+                    html = this.createHTML2(md.render(data), title);
                     resolve();
                 }
                 if(fileType == ".txt") {
