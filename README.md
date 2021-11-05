@@ -4,89 +4,37 @@ A Javascript command line program that converts **.txt** and **.md** files into 
 
 ## Implemented features
 
-- **Parsing titles** from .txt files => .html files to have `<h1>` and `<title>` tags
-- User can **specify output folder path**, instead of placing .html files in './dist' by default
-- If **input path** is a **folder**, it will look for all .txt files in the **folder** and in **subfolder(s)**
-- An `index.html` contains **links to other .html files** in folder.
-- **Parsing Heading** from .md files => .html files to have `<h1>` to `h6` tags
-- **Parsing Bold** text from .md files => .html files to have `<b>` tags
-- **Parsing Italic** text from .md files => .html files to have `<i>` tags
-- **Parsing Links** from .md files => .html files to have `<a href="">` tags
+- Specifying a language to add to html tag
+- Parsing titles from .txt files => .html files to have `<h1>` and `<title>` tags
+- User can specify output folder path, instead of placing .html files in `./dist` by default
+- If `input path` is a folder, it will look for all .txt files in the folder and in subfolder(s)
+- An `index.html` contains links to other .html files in folder.
+- Fully support parsing markdown files
 - User can **specify a JSON formatted config file** to store options, instead of passing options as command line arguments
-
-## Example:
-
-###### file.txt
-
-```
-Silver Blaze
-
-
-I am afraid, Watson, that I shall have to go,” said Holmes, as we
-sat down together to our breakfast one morning.
-
-“Go! Where to?”
-
-“To Dartmoor; to King’s Pyland.”
-```
-
-will be converted to
-
-###### file.html
-
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Silver Blaze</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
-    />
-  </head>
-  <h1>Silver Blaze</h1>
-  <body>
-    <p>
-      I am afraid, Watson, that I shall have to go,” said Holmes, as we sat down
-      together to our breakfast one morning.
-    </p>
-    <p>“Go! Where to?”</p>
-    <p>“To Dartmoor; to King’s Pyland.”</p>
-  </body>
-</html>
-```
-
-###### index.html for ./textfiles/
-
-![Image of index.html](https://i.ibb.co/9YVnN1y/Screenshot-2021-09-14-003724.png)
 
 ## How to use:
 
+Run one of these commands in your terminal
+
 ```
-node index.js -i ./textfiles/file.txt
+ssg -i ./textfiles/file.txt
 ```
 
 Converting `file.txt` in `./textfiles/` to `html`
 
 ```
-node index.js -i ./textfiles
+ssg -i ./textfiles
 ```
 
 Converting all `.txt` files found in `./textfiles` folder
 
 ```
-node index.js -i ./textfiles -o ./outputFiles
+ssg -i ./textfiles -o ./outputFiles
 ```
 
 Converting all `.txt` files found in `./textfiles` folder and place `html` output files in `./outputFiles`
 
-```
-node index.js -i sometext.txt
-node index.js -i markdownFile.md
-```
-
 Parsing JSON formatted config file with options.
-
 Use of `-c` or `--config` will ignore `-i`, `-o`, `-l` options in the command line.
 
 ```
