@@ -18,43 +18,54 @@ program
     "use stored commands in config file"
   );
 
-program.parse(process.argv);
+const parseCommand = (option) => {
+  program.parse(process.argv);
 
-//Look for option
-const option = program.opts();
-
-if (option.config) {
-  try {
-    let configData = fs.readFileSync(option.config);
-    let configOptions = JSON.parse(configData);
-    for (const [key, value] of Object.entries(configOptions)) {
-      value || value.length > 0
-        ? (option[`${key}`] = `${value}`)
-        : (option[`${key}`] = undefined);
-    }
-    if (!option.input) {
+  //Look for option
+  if (option.config) {
+    try {
+      let configData = fs.readFileSync(option.config);
+      let configOptions = JSON.parse(configData);
+      for (const [key, value] of Object.entries(configOptions)) {
+        value || value.length > 0
+          ? (option[`${key}`] = `${value}`)
+          : (option[`${key}`] = undefined);
+      }
+      if (!option.input) {
+        console.error(
+          `error: input <file or directory> is not specified in config file ${option.config}`
+        );
+        return 0;
+      }
+    } catch (error) {
       console.error(
-        "\x1B[31m",
-        `error: input <file or directory> is not specified in config file ${option.config}`,
-        "\x1B[0m"
+        `Can't read or parse config file ${option.config}\n ${error}`
       );
-      process.exit(-1);
+      return 0;
     }
-  } catch (error) {
-    console.error(
-      "\x1B[31m",
-      `Can't read or parse config file ${option.config}\n ${error}`,
-      "\x1B[0m"
-    );
-    process.exit(-1);
   }
-}
-if (option.input) {
+  if (option.output) {
+    console.log(`Output path: ${option.output}`);
+  }
+  if (option.lang) {
+    console.log(`Html language: ${option.lang}`);
+  }
+  if (option.input) {
+    console.log(`Input path: ${option.input}`);
+    return 1;
+  } else {
+    console.error(
+      "error: required option '-i, --input <file path>' not specified"
+    );
+    return 0;
+  }
+};
+const convertFiles = (option) => {
   var ssg = new SSG(option.input, option.output, option.lang);
-  ssg.processInput(option.input);
-} else
-  console.error(
-    "\x1B[31m",
-    "error: required option '-i, --input <file path>' not specified",
-    "\x1B[0m"
-  );
+  ssg.processInput(ssg.inputPath_);
+};
+const option = program.opts();
+if (parseCommand(option)) {
+  convertFiles(option);
+}
+module.exports.parseCommand = parseCommand;
