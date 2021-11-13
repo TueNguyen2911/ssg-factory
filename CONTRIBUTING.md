@@ -23,3 +23,9 @@ npx eslint .
 ```
 
 You can format certain files by replacing `.` to `<file paths>` for `linting` and `formating`
+
+## Testing 
+
+This project uses [JEST]() as its testing tool. 
+
+To add more tests, please add test files into `./tests` folder. And simply use `npm run jest --<file>` to run tests. 
