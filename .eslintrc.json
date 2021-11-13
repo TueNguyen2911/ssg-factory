@@ -8,10 +8,12 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
+  "ignorePatterns": ["./tests"],
   "rules": {
     "semi": ["error", "always"],
     "quotes": ["error", "double"],
     "require-atomic-updates": "error",
-    "max-len": ["warn", { "code": 200 }]
+    "max-len": ["warn", { "code": 200 }],
+    "curly": "error"
   }
 }

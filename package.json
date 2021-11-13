@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "main": "index.js",
   "bin": {
-    "ssg": "./index.js"
+    "ssg": "index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --",
+    "make-pretty": "npx prettier --write"
   },
   "author": "Tue Nguyen",
   "license": "ISC",
@@ -23,6 +24,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.0",
+    "jest": "^27.3.1",
     "lint-staged": "^11.2.6",
     "prettier": "^2.4.1"
   },
