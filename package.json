@@ -1,9 +1,9 @@
 {
   "name": "tueng-cli-ssg",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "bin/index.js",
   "bin": {
-    "ssg": "index.js"
+    "ssg": "bin/index.js"
   },
   "scripts": {
     "test": "jest --",
@@ -15,7 +15,8 @@
   "dependencies": {
     "commander": "^8.1.0",
     "highlight.js": "^11.3.1",
-    "markdown-it": "^12.2.0"
+    "markdown-it": "^12.2.0",
+    "node-dir": "^0.1.17"
   },
   "devDependencies": {
     "eslint": "^8.1.0",

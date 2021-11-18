@@ -45,24 +45,27 @@ const parseCommand = (option) => {
     }
   }
   if (option.output) {
-    console.log(`Output path: ${option.output}`);
+    console.log(require("chalk").blue(`Output path: ${option.output}`));
   }
   if (option.lang) {
-    console.log(`Html language: ${option.lang}`);
+    console.log(require("chalk").blue(`Html language: ${option.lang}`));
   }
   if (option.input) {
-    console.log(`Input path: ${option.input}`);
+    console.log(require("chalk").blue(`Input path: ${option.input}`));
     return 1;
   } else {
     console.error(
-      "error: required option '-i, --input <file path>' not specified"
+      require("chalk").red(
+        "error: required option '-i, --input <file path>' not specified"
+      )
     );
     return 0;
   }
 };
+
 const convertFiles = (option) => {
   var ssg = new SSG(option.input, option.output, option.lang);
-  ssg.processInput(ssg.inputPath_);
+  ssg.generateFiles();
 };
 const option = program.opts();
 if (parseCommand(option)) {
