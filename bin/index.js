@@ -65,7 +65,7 @@ const parseCommand = (option) => {
 
 const convertFiles = (option) => {
   var ssg = new SSG(option.input, option.output, option.lang);
-  ssg.generateFiles();
+  ssg.generateFile();
 };
 const option = program.opts();
 if (parseCommand(option)) {

@@ -1,76 +1,75 @@
 const { HandleFolder } = require("./helpers/handleFolder");
 const { ConvertToHtml } = require("./helpers/convertToHtml");
 const { HandleInputPath } = require("./helpers/handleInputPath");
-const { WriteHtmlFile } = require("./helpers/writeHtmlFile");
+const { WriteHtml } = require("./helpers/writeHtml");
 const { CreateIndexFile } = require("./helpers/createIndexFile");
 
 /**
  * SSG class takes in all the command line options and generate html files
  */
 class SSG {
-  filePaths_ = [];
-  toBeGenerated_ = [];
-  generatedFiles_ = [];
   constructor(inputPath, outputPath, lang) {
     this.inputPath_ = inputPath;
     this.outputPath_ = outputPath ? outputPath : "./dist";
     this.lang_ = lang ? lang : "en-CA";
   }
-  createFileInfos = () => {
+  createFileInfo = () => {
     return new Promise((resolve) => {
-      let promiseArray = [];
-      let fileInfos = [];
+      let promiseArr = [];
+      let fileInfo = [];
 
       const handleInput = new HandleInputPath("textfiles");
       handleInput.handleInput();
       const initalData = handleInput.getData();
+      //if extension is folder, get the resolve of the inital Promise return (an array of file paths in the folder)
+      //for each file => handleInput() again => resolve the Promise return and get the file data.
       if (initalData.ext == "folder") {
         initalData.result.then((paths) => {
-          paths.forEach((path) => {
+          paths.map((path) => {
             handleInput.setFilePath(path);
             handleInput.handleInput();
             const folderData = handleInput.getData();
-            promiseArray.push(folderData.result);
-            fileInfos.push({
+            promiseArr.push(folderData.result);
+            fileInfo.push({
               path: path,
               fileData: ""
             });
           });
           (async () => {
-            const temp = await Promise.all(promiseArray);
+            const temp = await Promise.all(promiseArr);
             temp.map((fileData, index) => {
-              fileInfos[index].fileData = fileData;
+              fileInfo[index].fileData = fileData;
             });
-            resolve(fileInfos);
+            resolve(fileInfo);
           })();
         });
       } else {
         initalData.result((fileData) => {
-          fileInfos.push({ path: this.inputPath_, fileData: fileData });
+          fileInfo.push({ path: this.inputPath_, fileData: fileData });
         });
       }
     });
   };
   /**
-   * main functions of SSG
+   * main function of SSG
    */
-  generateFiles = async () => {
-    let promiseArray = [];
+  generateFile = async () => {
+    let promiseArr = [];
     let response = null;
     //delete or create new output folder
     const handleFolder = new HandleFolder(this.outputPath_);
     handleFolder.createFolder();
     //handle input file path, fileInfos is an array of {path, fileData}
-    const fileInfos = await this.createFileInfos();
+    const fileInfo = await this.createFileInfo();
 
     //convert fileData of files ".txt" and ".md" into htmlString;
     const convertToHtml = new ConvertToHtml(this.lang_, this.outputPath_);
-    promiseArray = fileInfos.map((elem) => {
+    promiseArr = fileInfo.map((elem) => {
       convertToHtml.setFileData(elem.fileData);
       convertToHtml.setFilePath(elem.path);
       return convertToHtml.convertFileDataToHtml();
     });
-    response = await Promise.all(promiseArray);
+    response = await Promise.all(promiseArr);
     const toBeWritten = response.map((converted) => {
       return {
         htmlString: converted.htmlString,
@@ -79,20 +78,19 @@ class SSG {
     });
 
     //write html files to output folder
-    const writeHtmlFile = new WriteHtmlFile(null, null);
-    promiseArray = toBeWritten.map((converted) => {
-      writeHtmlFile.setOutputPath(converted.fullOutputPath);
-      writeHtmlFile.setHtmlString(converted.htmlString);
-      return writeHtmlFile.writeHtmlFileToOutputFolder();
+    const writeHtml = new WriteHtml(null, null);
+    promiseArr = toBeWritten.map((converted) => {
+      writeHtml.setOutputPath(converted.fullOutputPath);
+      writeHtml.setHtmlString(converted.htmlString);
+      return writeHtml.writeHtmlFileToOutputFolder();
     });
-    response = await Promise.all(promiseArray);
-    response.map((generated) => {
-      this.generatedFiles_.push(generated);
-    });
+    response = await Promise.all(promiseArr);
+    //generatedFiles array
+    const generatedFiles = response.map((generated) => generated);
 
     //create index.html file
     const createIndexFile = new CreateIndexFile(
-      this.generatedFiles_,
+      generatedFiles,
       this.lang_,
       this.outputPath_
     );

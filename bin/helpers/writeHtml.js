@@ -2,7 +2,7 @@ const fs = require("fs");
 /**
  * WriteHtmlFile is responsible for writing file to output folder
  */
-class WriteHtmlFile {
+class WriteHtml {
   constructor(outputPath, htmlString) {
     this.outputPath_ = outputPath;
     this.htmlString_ = htmlString;
@@ -26,4 +26,4 @@ class WriteHtmlFile {
   };
 }
 
-module.exports.WriteHtmlFile = WriteHtmlFile;
+module.exports.WriteHtml = WriteHtml;

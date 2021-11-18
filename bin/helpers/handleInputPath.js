@@ -27,6 +27,10 @@ class HandleInputPath {
       return process.exit(0);
     }
   };
+  /**
+   *
+   * @returns
+   */
   getData = () => {
     return {
       ext: this.ext_,
@@ -41,7 +45,7 @@ class HandleInputPath {
     return nodeDir.promiseFiles(this.filePath_);
   };
   /**
-   * Check file extension
+   * Check for file extension, set this.result_ is set to Promise if folder, file data if ".txt" or ".md"
    */
   handleInput = () => {
     if (path.extname(this.filePath_) == ".txt") {
