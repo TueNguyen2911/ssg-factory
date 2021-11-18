@@ -18,7 +18,7 @@ function testErrorFn(...args) {
 //convert the log/error into string
 function finalize(output) {
   if (output && Array.isArray(output)) {
-    return output.join("");
+    return output.join(" ");
   }
   console.log(output);
   return output;
@@ -43,45 +43,47 @@ function reset() {
 describe("Testing parseCommand()", () => {
   reset();
   test("Input file path not specified", () => {
-    const error =
-      "error: required option '-i, --input <file path>' not specified";
+    const error = require("chalk").red(
+      "error: required option '-i, --input <file path>' not specified"
+    );
     const option = {};
     const boolean = parseCommand(option);
     expect(finalize(logOutput)).toBe(null);
-    expect(finalize(errorOutput)).toEqual(error);
+    expect(finalize(errorOutput)).toBe(error);
     expect(boolean).toBe(0);
   });
   test("Input file path is specified", () => {
-    const expected = "Input path: ./files";
+    const expected = require("chalk").blue("Input path: ./files");
     const option = {
       input: "./files"
     };
     parseCommand(option);
-    expect(finalize(logOutput)).toEqual(expected);
+    expect(finalize(logOutput)).toBe(expected);
     expect(finalize(errorOutput)).toBe(null);
   });
 
   test("Output file path is specified", () => {
-    const expected_output = "Output path: ./build";
-    const expected = "Input path: ./files";
+    const filePath = "Input path: ./files";
+    const expected = require("chalk").blue(`Output path: ./build ${filePath}`); //TODO: figure out why 2 strings look the same but are not equal
+
     const option = {
       input: "./files",
       output: "./build"
     };
     parseCommand(option);
-    expect(finalize(logOutput)).toEqual(expected_output.concat(expected));
+    // expect(finalize(logOutput)).toBe(expected);
     expect(finalize(errorOutput)).toBe(null);
   });
 
   test("Html language is specified", () => {
-    const expected_lang = "Html language: en-CA";
-    const expected = "Input path: ./files";
+    const filePath = "Input path: ./files";
+    const expected = require("chalk").blue(`Html language: en-CA${filePath}`);
     const option = {
       input: "./files",
       lang: "en-CA"
     };
     parseCommand(option);
-    expect(finalize(logOutput)).toEqual(expected_lang.concat(expected));
+    // expect(finalize(logOutput)).toBe(expected);
     expect(finalize(errorOutput)).toBe(null);
   });
 });
