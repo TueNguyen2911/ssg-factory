@@ -1,4 +1,4 @@
-const { parseCommand } = require("../index.js");
+const { parseCommand } = require("./index.js");
 
 //save the original global console in these 2 consts
 const originalConsoleLogFn = global.console.log;

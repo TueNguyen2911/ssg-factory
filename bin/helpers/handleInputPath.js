@@ -7,7 +7,7 @@ const nodeDir = require("node-dir");
  * - If the filePath is a folder => return a Promise with a response of an array of file paths inside the folder
  */
 class HandleInputPath {
-  constructor(filePath = "textfiles/testtxt.txt") {
+  constructor(filePath) {
     this.filePath_ = filePath;
     this.result_ = null;
     this.ext_ = null;
@@ -24,7 +24,7 @@ class HandleInputPath {
       return fs.readFile(this.filePath_, "utf-8");
     } catch (err) {
       console.log(require("chalk").yellow(`${err}`));
-      return process.exit(0);
+      process.exit(0);
     }
   };
   /**

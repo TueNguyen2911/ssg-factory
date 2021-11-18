@@ -2,7 +2,7 @@ const { HandleFolder } = require("./helpers/handleFolder");
 const { ConvertToHtml } = require("./helpers/convertToHtml");
 const { HandleInputPath } = require("./helpers/handleInputPath");
 const { WriteHtml } = require("./helpers/writeHtml");
-const { CreateIndexFile } = require("./helpers/createIndexFile");
+const { CreateIndex } = require("./helpers/createIndex");
 
 /**
  * SSG class takes in all the command line options and generate html files
@@ -89,7 +89,7 @@ class SSG {
     const generatedFiles = response.map((generated) => generated);
 
     //create index.html file
-    const createIndexFile = new CreateIndexFile(
+    const createIndexFile = new CreateIndex(
       generatedFiles,
       this.lang_,
       this.outputPath_

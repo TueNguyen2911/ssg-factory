@@ -1,1 +1,2 @@
-/tests
+*.test.js
+bin/helpers/__mocks__/
