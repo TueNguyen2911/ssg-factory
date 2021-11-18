@@ -1,5 +1,6 @@
 const path = require("path");
 const hljs = require("highlight.js");
+const pretty = require("pretty");
 const md = require("markdown-it")({
   highlight: (str, lang) => {
     if (lang && hljs.getLanguage(lang)) {
@@ -52,7 +53,7 @@ class ConvertToHtml {
             </main>
           </body>
         </html>`;
-    return html;
+    return pretty(html);
   };
   /**
    *  Look for title and convert text files into html strings by calling interpolateHtml(), resolves a

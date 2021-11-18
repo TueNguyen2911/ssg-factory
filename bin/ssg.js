@@ -53,6 +53,7 @@ class SSG {
   /**
    * main function of SSG
    */
+  //TODO: divide this func
   generateFile = async () => {
     let promiseArr = [];
     let response = null;
@@ -62,7 +63,7 @@ class SSG {
     //handle input file path, fileInfos is an array of {path, fileData}
     const fileInfo = await this.createFileInfo();
 
-    //convert fileData of files ".txt" and ".md" into htmlString;
+    //convert fileData of ".txt" and ".md" files into htmlString;
     const convertToHtml = new ConvertToHtml(this.lang_, this.outputPath_);
     promiseArr = fileInfo.map((elem) => {
       convertToHtml.setFileData(elem.fileData);
@@ -85,6 +86,7 @@ class SSG {
       return writeHtml.writeHtmlFileToOutputFolder();
     });
     response = await Promise.all(promiseArr);
+
     //generatedFiles array
     const generatedFiles = response.map((generated) => generated);
 

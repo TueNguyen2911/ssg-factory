@@ -10,29 +10,34 @@ class CreateIndex {
     this.lang_ = lang;
     this.outputFolder_ = outputFolder;
   }
+  createLinks = () => {
+    const links = this.generatedFiles_
+      .map((param, index) => {
+        let line = `<a style="display:block" href=${path
+          .basename(param)
+          .replace(/\s/g, "%20")}>${path.basename(param, ".html")}</a>\n`;
+        if (index == 0) {
+          line = `<h1>Index</h1>\n<a style="display:block" href=${path
+            .basename(param)
+            .replace(/\s/g, "%20")}>${path.basename(param, ".html")}</a>\n`;
+        }
+        return line;
+      })
+      .join("");
+    return links;
+  };
+  createHtmlString = (links) => {
+    const convertToHtml = new ConvertToHtml(this.lang_, this.outputPath_);
+    return convertToHtml.interpolateHtml(links, "Index");
+  };
   /**
    * Generate index.html to output folder
    * @returns a Promise resolve message
    */
   createIndexHtmlFile = () => {
     return new Promise((resolve) => {
-      const convertToHtml = new ConvertToHtml(this.lang_, this.outputPath_);
-
-      const links = this.generatedFiles_
-        .map((param, index) => {
-          let line = `<a style="display:block" href=${path
-            .basename(param)
-            .replace(/\s/g, "%20")}>${path.basename(param, ".html")}</a>\n`;
-          if (index == 0) {
-            line = `<h1>Index</h1>\n<a style="display:block" href=${path
-              .basename(param)
-              .replace(/\s/g, "%20")}>${path.basename(param, ".html")}</a>\n`;
-          }
-          return line;
-        })
-        .join("");
-
-      const htmlString = convertToHtml.interpolateHtml(links, "Index");
+      const links = this.createLinks();
+      const htmlString = this.createHtmlString(links);
       const writeHtmlFile = new WriteHtml(
         path.join(this.outputFolder_, "Index.html"),
         htmlString
