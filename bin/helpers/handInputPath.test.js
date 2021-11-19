@@ -11,7 +11,7 @@ describe("Testing handleInputPath class", () => {
     ["test.doc", "pic.mp4", "video.mp4"].map((filePath) => {
       handleInput = new HandleInputPath(filePath);
       handleInput.handleInput();
-      expect(mockExit).toHaveBeenCalledWith(0);
+      expect(mockExit).toHaveBeenCalledWith(1);
     });
   });
 
