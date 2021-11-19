@@ -18,13 +18,16 @@ class SSG {
       let promiseArr = [];
       let fileInfo = [];
 
-      const handleInput = new HandleInputPath("textfiles");
+      const handleInput = new HandleInputPath(this.inputPath_);
       handleInput.handleInput();
-      const initalData = handleInput.getData();
+      const initalData = handleInput.getData(); //{ext: string, result: a Promise object}
       //if extension is folder, get the resolve of the inital Promise return (an array of file paths in the folder)
       //for each file => handleInput() again => resolve the Promise return and get the file data.
       if (initalData.ext == "folder") {
+        console.log(initalData);
         initalData.result.then((paths) => {
+          //paths is the array of path
+          console.log(paths);
           paths.map((path) => {
             handleInput.setFilePath(path);
             handleInput.handleInput();
@@ -44,7 +47,7 @@ class SSG {
           })();
         });
       } else {
-        initalData.result((fileData) => {
+        initalData.result.then((fileData) => {
           fileInfo.push({ path: this.inputPath_, fileData: fileData });
         });
       }
@@ -60,43 +63,44 @@ class SSG {
     //delete or create new output folder
     const handleFolder = new HandleFolder(this.outputPath_);
     handleFolder.createFolder();
-    //handle input file path, fileInfos is an array of {path, fileData}
+
+    //handle input file path, fileInfo is an array of {path, fileData}
     const fileInfo = await this.createFileInfo();
 
-    //convert fileData of ".txt" and ".md" files into htmlString;
-    const convertToHtml = new ConvertToHtml(this.lang_, this.outputPath_);
-    promiseArr = fileInfo.map((elem) => {
-      convertToHtml.setFileData(elem.fileData);
-      convertToHtml.setFilePath(elem.path);
-      return convertToHtml.convertFileDataToHtml();
-    });
-    response = await Promise.all(promiseArr);
-    const toBeWritten = response.map((converted) => {
-      return {
-        htmlString: converted.htmlString,
-        fullOutputPath: converted.fullOutputPath
-      };
-    });
+    // //convert fileData of ".txt" and ".md" files into htmlString;
+    // const convertToHtml = new ConvertToHtml(this.lang_, this.outputPath_);
+    // promiseArr = fileInfo.map((elem) => {
+    //   convertToHtml.setFileData(elem.fileData);
+    //   convertToHtml.setFilePath(elem.path);
+    //   return convertToHtml.convertFileDataToHtml();
+    // });
+    // response = await Promise.all(promiseArr);
+    // const toBeWritten = response.map((converted) => {
+    //   return {
+    //     htmlString: converted.htmlString,
+    //     fullOutputPath: converted.fullOutputPath
+    //   };
+    // });
 
-    //write html files to output folder
-    const writeHtml = new WriteHtml(null, null);
-    promiseArr = toBeWritten.map((converted) => {
-      writeHtml.setOutputPath(converted.fullOutputPath);
-      writeHtml.setHtmlString(converted.htmlString);
-      return writeHtml.writeHtmlFileToOutputFolder();
-    });
-    response = await Promise.all(promiseArr);
+    // //write html files to output folder
+    // const writeHtml = new WriteHtml(null, null);
+    // promiseArr = toBeWritten.map((converted) => {
+    //   writeHtml.setOutputPath(converted.fullOutputPath);
+    //   writeHtml.setHtmlString(converted.htmlString);
+    //   return writeHtml.writeHtmlFileToOutputFolder();
+    // });
+    // response = await Promise.all(promiseArr);
 
-    //generatedFiles array
-    const generatedFiles = response.map((generated) => generated);
+    // //generatedFiles array
+    // const generatedFiles = response.map((generated) => generated);
 
-    //create index.html file
-    const createIndexFile = new CreateIndex(
-      generatedFiles,
-      this.lang_,
-      this.outputPath_
-    );
-    await createIndexFile.createIndexHtmlFile();
+    // //create index.html file
+    // const createIndexFile = new CreateIndex(
+    //   generatedFiles,
+    //   this.lang_,
+    //   this.outputPath_
+    // );
+    // await createIndexFile.createIndexHtmlFile();
   };
 }
 module.exports.SSG = SSG;

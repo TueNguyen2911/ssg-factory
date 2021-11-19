@@ -56,10 +56,8 @@ class ConvertToHtml {
     return pretty(html);
   };
   /**
-   *  Look for title and convert text files into html strings by calling interpolateHtml(), resolves a
+   * Look for title and convert text files into html strings by calling interpolateHtml(), resolves a
    * key-value pair of fullOutputPath and htmlString
-   *  @param {string} filePath from commandLine
-   *  @param {string} fileType the file extension
    */
   convertFileDataToHtml = () => {
     return new Promise((resolve) => {
