@@ -42,7 +42,7 @@ class HandleInputPath {
    * @returns a Promise whose resolve is an array of files in the folder
    */
   readFolder = () => {
-    return nodeDir.promiseFiles(this.filePath_);
+    return nodeDir.promiseFiles(this.filePath_); //a Promise of an array of file pahts in the folder
   };
   /**
    * Check for file extension, set this.result_ is set to Promise if folder, file data if ".txt" or ".md"

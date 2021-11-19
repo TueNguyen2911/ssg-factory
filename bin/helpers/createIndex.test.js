@@ -23,7 +23,6 @@ describe("Testing CreateIndexFile class", () => {
             <a style=\"display:block\" href=file.txt>file.txt</a>
             <a style=\"display:block\" href=text.txt>text.txt</a>
             <a style=\"display:block\" href=README.md>README.md</a>
-            
           </div>
         </main>
       </body>
