@@ -11,7 +11,7 @@ describe("Testing convertFileDataToHtml()", () => {
     expect(result.htmlString).toMatch(new RegExp(/<p>(.+?)<\/p>/g));
   });
 
-  test("paragraphs should be wrapped in <p> tag", async () => {
+  test("header should be wrapped in <h1> tag", async () => {
     const convertToHtml = new ConvertToHtml("en", "./dist");
 
     convertToHtml.setFilePath("./samples/test.txt");
