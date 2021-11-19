@@ -24,7 +24,7 @@ class HandleInputPath {
       return fs.readFile(this.filePath_, "utf-8");
     } catch (err) {
       console.log(require("chalk").yellow(`${err}`));
-      process.exit(0);
+      process.exit(1);
     }
   };
   /**
@@ -59,7 +59,7 @@ class HandleInputPath {
       this.ext_ = "folder";
     } else {
       console.error(require("chalk").red("Wrong file extension"));
-      process.exit(0);
+      process.exit(1);
     }
   };
 }
