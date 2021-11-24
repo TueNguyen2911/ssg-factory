@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`End to End testing should print the version of the program when --version is specified 1`] = `"tue-1st-ssg 0.1"`;
+
+exports[`End to End testing should print usage and options when --help option is specified 1`] = `
+"Usage: index [options]
+
+Options:
+  -v, --version                    output the version number
+  -o, --output <path>              specify a path for .html files output
+  -l, --lang <language code>       adding a language to HTML document
+  -i, --input <file path>          (required) transform .txt or .md files into
+                                   .html files
+  -c, --config <config file path>  use stored commands in config file
+  -h, --help                       display help for command"
+`;

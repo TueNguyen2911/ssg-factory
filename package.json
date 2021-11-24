@@ -6,7 +6,7 @@
     "ssg": "bin/index.js"
   },
   "scripts": {
-    "test": "jest --",
+    "test": "jest",
     "make-pretty": "npx prettier --write"
   },
   "author": "Tue Nguyen",
@@ -14,6 +14,7 @@
   "description": "A script that convert .md and .txt files into .html files",
   "dependencies": {
     "commander": "^8.1.0",
+    "execa": "^5.1.1",
     "highlight.js": "^11.3.1",
     "markdown-it": "^12.2.0",
     "node-dir": "^0.1.17",
@@ -38,7 +39,7 @@
   "lint-staged": {
     "*.js": [
       "npx prettier --write",
-      "npx eslint"
+      "npx eslint ."
     ]
   }
 }

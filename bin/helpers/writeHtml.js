@@ -20,7 +20,6 @@ class WriteHtml {
   writeHtmlFileToOutputFolder = () => {
     return new Promise((resolve) => {
       fs.writeFileSync(this.outputPath_, this.htmlString_);
-      console.log(require("chalk").green(`${this.outputPath_} is created`));
       resolve(this.outputPath_);
     });
   };
