@@ -47,7 +47,7 @@ Use of `-c` or `--config` will ignore `-i`, `-o`, `-l` options in the command li
 ```
 
 ```
-node index.js -c configFile.json
+npx ssg-factory -c configFile.json
 ```
 
 ## Help
