@@ -2,6 +2,12 @@
 2.  Install [node](https://nodejs.org/en/) on your machine
 3.  Install dependencies by using `npm install`
 
+## Run locally
+
+You can run the program using `ssg` instead of `npx ssg-factory`
+
+## Overview
+
 The project enforces the use of `Prettier`, `EsLint` and pre-commit hook with `husky` and `lint-staged`
 
 ## Formating
@@ -24,8 +30,12 @@ npx eslint .
 
 You can format certain files by replacing `.` to `<file paths>` for `linting` and `formating`
 
-## Testing 
+## Pre-commit
 
-This project uses [JEST]() as its testing tool. 
+This project uses `husky` and `lint-staged` as a pre-commit hook to enforce code to be cleaned before entering `git`.
 
-To add more tests, please add test files into `./tests` folder. And simply use `npm run jest --<file>` to run tests. 
+## Testing
+
+This project uses [JEST]() as its testing tool.
+
+To add more tests, please add test files into `bin`(unit tests) and `bin/test`(e2r test) folders. And simply use `npm run jest --<file>` to run tests.
