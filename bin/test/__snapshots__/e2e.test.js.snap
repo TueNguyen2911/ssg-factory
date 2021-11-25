@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`End to End testing should print the version of the program when --version is specified 1`] = `"tue-1st-ssg 0.1"`;
+exports[`End to End testing should print the version of the program when --version is specified 1`] = `"ssg-factory v1.0.6"`;
 
 exports[`End to End testing should print usage and options when --help option is specified 1`] = `
-"Usage: index [options]
+"Usage: ssg-factory [options]
 
 Options:
   -v, --version                    output the version number
