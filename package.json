@@ -1,6 +1,6 @@
 {
   "name": "ssg-factory",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "bin/index.js",
   "bin": {
     "ssg": "bin/index.js"
