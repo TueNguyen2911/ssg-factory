@@ -45,7 +45,7 @@ class CreateIndex {
       );
       (async () => {
         await writeHtmlFile.writeHtmlFileToOutputFolder();
-        resolve(`${path.join(this.outputFolder_, "Index.html")} is created`);
+        resolve(`Finshed converting.\n${path.join(this.outputFolder_, "Index.html")} is created linking all files created`);
       })();
     });
   };
