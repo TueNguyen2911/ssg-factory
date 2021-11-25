@@ -1,5 +1,5 @@
 {
-  "name": "tueng-cli-ssg",
+  "name": "ssg-factory",
   "version": "0.0.1",
   "main": "bin/index.js",
   "bin": {

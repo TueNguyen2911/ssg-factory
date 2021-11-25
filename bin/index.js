@@ -3,7 +3,6 @@ const { Command } = require("commander");
 const program = new Command();
 const fs = require("fs");
 const { SSG } = require("./ssg");
-
 //configure program
 program.version("tue-1st-ssg 0.1", "-v, --version");
 program
