@@ -53,7 +53,7 @@ npx ssg-factory -c configFile.json
 ## Help
 
 ```
-Usage: index [options]
+Usage: npx ssg-factory [options]
 
 Options:
   -V, --version            output the version number

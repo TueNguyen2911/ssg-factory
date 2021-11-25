@@ -3,8 +3,10 @@ const { Command } = require("commander");
 const program = new Command();
 const fs = require("fs");
 const { SSG } = require("./ssg");
+const { version } = require("../package.json");
 //configure program
-program.version("tue-1st-ssg 0.1", "-v, --version");
+program.name("ssg-factory");
+program.version(`ssg-factory v${version}`, "-v, --version");
 program
   .option("-o, --output <path>", "specify a path for .html files output")
   .option("-l, --lang <language code>", "adding a language to HTML document")
